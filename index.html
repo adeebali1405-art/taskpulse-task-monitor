@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TaskPulse – Smart Task Monitor BY M.Adeeb Ali Softwer Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+:root{--bg:#0d0f12;--card:#16191e;--card2:#1d2127;--line:#2a2f37;--tx:#f2f4f7;--mut:#8b94a1;--ac:#4180c8;--acx:#0d0f12;--red:#ff6b6b;--amb:#57ff5d;--blu:#6bb7ff;color-scheme:dark;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f6f8;--card:#fff;--card2:#eef1f4;--line:#dde2e8;--tx:#14181d;--mut:#667080;--ac:#3f8f00;--acx:#fff;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f4f6f8;--card:#fff;--card2:#eef1f4;--line:#e8e2dd;--tx:#14181d;--mut:#667080;--ac:#8d008f;--acx:#fff;color-scheme:light}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--tx);font:15px/1.5 Inter,system-ui,sans-serif;min-height:100vh}
+h1,h2,h3,.num{font-family:"Space Grotesk",Inter,sans-serif}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.app{max-width:1180px;margin:auto;padding:20px;display:grid;gap:18px}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{width:42px;height:42px;border-radius:12px;background:var(--ac);color:var(--acx);display:grid;place-items:center;font-size:22px}
+header h1{font-size:1.5rem;letter-spacing:-.02em}
+header p{color:var(--mut);font-size:.85rem}
+.clock{margin-left:auto;text-align:right}
+.clock b{font:700 1.6rem "Space Grotesk";display:block;font-variant-numeric:tabular-nums}
+.clock span{color:var(--mut);font-size:.8rem}
+.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat .num{font-size:1.9rem;font-weight:700}.stat small{color:var(--mut)}
+.stat.hl .num{color:var(--ac)}
+.bar{height:6px;background:var(--card2);border-radius:9px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--ac);width:0;transition:width .5s}
+.main{display:grid;grid-template-columns:1.6fr 1fr;gap:18px}
+@media(max-width:860px){.main{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;display:grid;gap:14px;align-content:start}
+.panel h2{font-size:1.05rem}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day{background:var(--card2);border:1px solid transparent;border-radius:12px;padding:8px 2px;text-align:center;transition:.2s}
+.day:hover{transform:translateY(-2px)}.day.on{border-color:var(--ac)}
+.day small{display:block;color:var(--mut);font-size:.7rem}.day b{font:700 1.1rem "Space Grotesk"}
+.day i{display:block;width:6px;height:6px;border-radius:50%;margin:3px auto 0;background:transparent}.day.has i{background:var(--ac)}
+form{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+form>*{min-width:0}
+input,select{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;width:100%;outline:0}
+input:focus,select:focus{border-color:var(--ac)}
+#title{grid-column:1/-1}.c2{grid-column:span 2}
+.primary{grid-column:1/-1;background:var(--ac);color:var(--acx);font-weight:600;border-radius:12px;padding:11px;transition:.2s}
+.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+@media(max-width:520px){form{grid-template-columns:1fr 1fr}.c2{grid-column:span 1}}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:6px 12px;border-radius:99px;background:var(--card2);color:var(--mut);font-size:.82rem;border:1px solid var(--line)}
+.chip.on{background:var(--ac);color:var(--acx);border-color:var(--ac);font-weight:600}
+.tools input{flex:1;min-width:120px;border-radius:99px;padding:6px 14px}
+ul{list-style:none;padding:0;display:grid;gap:10px}
+.task{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--card2);border:1px solid var(--line);border-left:4px solid var(--blu);border-radius:14px;padding:12px;animation:in .3s ease}
+.task.high{border-left-color:var(--red)}.task.med{border-left-color:var(--amb)}
+.task.done{opacity:.5}.task.done h3{text-decoration:line-through}
+.task.late:not(.done) .meta .when{color:var(--red)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.chk{width:24px;height:24px;border-radius:50%;border:2px solid var(--mut);display:grid;place-items:center;font-size:.8rem;color:var(--acx)}
+.done .chk{background:var(--ac);border-color:var(--ac)}
+.task h3{font-size:.98rem;font-weight:500;font-family:Inter}
+.meta{color:var(--mut);font-size:.78rem;display:flex;gap:10px;flex-wrap:wrap}
+.del{color:var(--mut);padding:6px;border-radius:8px}.del:hover{color:var(--red);background:var(--card)}
+.empty{text-align:center;color:var(--mut);padding:26px 0}
+.chat{display:grid;gap:10px;max-height:300px;overflow:auto;padding-right:4px}
+.msg{padding:9px 13px;border-radius:14px;max-width:90%;font-size:.88rem;animation:in .25s}
+.msg.bot{background:var(--card2);border-bottom-left-radius:4px}
+.msg.me{background:var(--ac);color:var(--acx);justify-self:end;border-bottom-right-radius:4px}
+.ask{display:flex;gap:8px}.ask button{background:var(--ac);color:var(--acx);border-radius:12px;padding:0 16px;font-weight:600}
+.hint{color:var(--mut);font-size:.76rem}
+#toasts{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:grid;gap:10px;z-index:20;max-width:340px}
+.toast{background:var(--card);border:1px solid var(--ac);border-radius:16px;padding:14px;box-shadow:0 12px 40px #0006;animation:in .3s,ring 1s 2}
+.toast b{font-family:"Space Grotesk"}.toast div{display:flex;gap:8px;margin-top:10px}
+.toast button{padding:6px 12px;border-radius:10px;background:var(--card2);font-size:.82rem}.toast button.ok{background:var(--ac);color:var(--acx);font-weight:600}
+@keyframes ring{25%{transform:rotate(-1.5deg)}75%{transform:rotate(1.5deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+ <header>
+  <div class="logo">⏰</div>
+  <div><h1>TaskPulse</h1><p>Smart task monitor &amp; reminder planner BY M.Adeeb Ali Softwer Developer</p></div>
+  <div class="clock"><b id="clk">--:--:--</b><span id="dte"></span></div>
+  <button class="icon-btn" id="theme" title="Toggle theme" aria-label="Toggle theme">🌓</button>
+  <button class="icon-btn" id="notif" title="Enable notifications" aria-label="Enable notifications">🔔</button>
+ </header>
+
+ <section class="stats" id="stats"></section>
+
+ <div class="main">
+  <section class="panel">
+   <h2>📅 This week</h2>
+   <div class="week" id="week"></div>
+   <form id="f">
+    <input id="title" placeholder="What do you need to remember?" required maxlength="80" aria-label="Task title">
+    <input type="date" id="date" class="c2" required aria-label="Date">
+    <input type="time" id="time" class="c2" required aria-label="Time">
+    <select id="rep" class="c2" aria-label="Repeat"><option value="none">No repeat</option><option value="daily">Daily</option><option value="weekly">Weekly</option></select>
+    <select id="pri" class="c2" aria-label="Priority"><option value="low">🟦 Low</option><option value="med">🟨 Medium</option><option value="high">🟥 High</option></select>
+    <button class="primary">＋ Add reminder</button>
+   </form>
+   <div class="tools" id="tabs">
+    <button class="chip on" data-f="today">Today</button><button class="chip" data-f="upcoming">Upcoming</button>
+    <button class="chip" data-f="done">Done</button><button class="chip" data-f="all">All</button>
+    <input id="q" type="search" placeholder="🔍 Search…" aria-label="Search tasks">
+   </div>
+   <ul id="list"></ul>
+  </section>
+
+  <aside class="panel">
+   <h2>🤖 Pulse assistant</h2>
+   <div class="chat" id="chat"></div>
+   <form class="ask" id="cf" style="display:flex"><input id="ci" placeholder="remind me to call mom tomorrow at 5pm" aria-label="Message assistant"><button>Send</button></form>
+   <p class="hint">Try: “gym every day at 7am”, “pay rent in 2 hours”, “what’s next?”, “clear done”.</p>
+  </aside>
+ </div>
+</div>
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)]
+const pad=n=>String(n).padStart(2,'0')
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+const at=t=>new Date(`${t.date}T${t.time}`)
+const addDays=(s,n)=>{const d=new Date(s+'T00:00');d.setDate(d.getDate()+n);return iso(d)}
+const fmt=t=>at(t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let tasks=load('tp-tasks',null), filter='today', day=null
+if(!tasks){const n=new Date();tasks=[
+ {id:1,title:'Team stand-up',date:iso(n),time:'09:30',rep:'daily',pri:'med',done:false,fired:false},
+ {id:2,title:'Review pull requests',date:iso(n),time:'15:00',rep:'none',pri:'high',done:false,fired:false},
+ {id:3,title:'Weekly planning',date:addDays(iso(n),2),time:'10:00',rep:'weekly',pri:'low',done:false,fired:false}]}
+const commit=()=>{save('tp-tasks',tasks);render()}
+
+/* ---------- audio + notifications ---------- */
+let ac
+const beep=()=>{try{ac??=new AudioContext();[660,880,660].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(.15,ac.currentTime+i*.18);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+i*.18+.15);o.start(ac.currentTime+i*.18);o.stop(ac.currentTime+i*.18+.16)})}catch{}}
+$('#notif').onclick=async()=>{try{const p=await Notification.requestPermission();say(p==='granted'?'Desktop notifications are on. 🔔':'Notifications are blocked, but in-app alerts still work.')}catch{say('Notifications aren’t supported here, so I’ll use in-app alerts.')}}
+
+/* ---------- actions ---------- */
+const toggle=id=>{const t=tasks.find(x=>x.id===id);if(!t)return
+ if(t.rep!=='none'&&!t.done){const step=t.rep==='daily'?1:7;do t.date=addDays(t.date,step);while(at(t)<new Date());t.fired=false}
+ else{t.done=!t.done;t.fired=t.done}
+ commit()}
+const snooze=(id,m=5)=>{const t=tasks.find(x=>x.id===id),d=new Date(Date.now()+m*6e4);t.date=iso(d);t.time=`${pad(d.getHours())}:${pad(d.getMinutes())}`;t.fired=false;commit()}
+const addTask=o=>{tasks.push({id:Date.now(),done:false,fired:false,rep:'none',pri:'med',...o});commit()}
+
+function alertTask(t){
+ t.fired=true;save('tp-tasks',tasks);beep()
+ try{if(Notification.permission==='granted')new Notification('⏰ '+t.title,{body:'Due at '+fmt(t)})}catch{}
+ const el=document.createElement('div');el.className='toast'
+ el.innerHTML=`<b>⏰ ${esc(t.title)}</b><br><small>Due ${fmt(t)}</small><div><button class="ok">✔ Done</button><button data-s>+5 min</button><button data-x>Dismiss</button></div>`
+ $('.ok',el).onclick=()=>{toggle(t.id);el.remove()};$('[data-s]',el).onclick=()=>{snooze(t.id);el.remove()};$('[data-x]',el).onclick=()=>el.remove()
+ $('#toasts').append(el);render()}
+
+/* ---------- render ---------- */
+function render(){
+ const now=new Date(),td=iso(now),open=tasks.filter(t=>!t.done)
+ const doneN=tasks.length-open.length,pct=tasks.length?Math.round(doneN/tasks.length*100):0
+ const late=open.filter(t=>at(t)<now).length,todayN=open.filter(t=>t.date===td).length
+ const nxt=open.filter(t=>at(t)>=now).sort((a,b)=>at(a)-at(b))[0]
+ $('#stats').innerHTML=`
+  <div class="stat hl"><small>Due today</small><div class="num">${todayN}</div></div>
+  <div class="stat"><small>Overdue</small><div class="num" style="color:${late?'var(--red)':'inherit'}">${late}</div></div>
+  <div class="stat"><small>Next up</small><div class="num" style="font-size:1.1rem;padding-top:9px">${nxt?esc(nxt.title.slice(0,18))+' · '+fmt(nxt):'All clear 🎉'}</div></div>
+  <div class="stat"><small>Completed ${pct}%</small><div class="num">${doneN}/${tasks.length}</div><div class="bar"><i style="width:${pct}%"></i></div></div>`
+ $('#week').innerHTML=Array.from({length:7},(_,i)=>{const s=addDays(td,i),d=new Date(s+'T00:00'),n=open.filter(t=>t.date===s).length
+  return `<button class="day ${day===s?'on':''} ${n?'has':''}" data-d="${s}"><small>${d.toLocaleDateString([],{weekday:'short'})}</small><b>${d.getDate()}</b><i></i></button>`}).join('')
+ const q=$('#q').value.toLowerCase()
+ let list=tasks.filter(t=>t.title.toLowerCase().includes(q))
+ if(day)list=list.filter(t=>t.date===day)
+ else list=list.filter(t=>({today:t.date===td&&!t.done||(t.date<td&&!t.done),upcoming:!t.done&&t.date>td,done:t.done,all:true})[filter])
+ list.sort((a,b)=>at(a)-at(b))
+ $('#list').innerHTML=list.length?list.map(t=>`
+  <li class="task ${t.pri} ${t.done?'done':''} ${at(t)<now?'late':''}">
+   <button class="chk" data-t="${t.id}" aria-label="Toggle done">${t.done?'✓':''}</button>
+   <div><h3>${esc(t.title)}</h3><div class="meta"><span class="when">🕒 ${fmt(t)}</span><span>📆 ${at(t).toLocaleDateString([],{month:'short',day:'numeric'})}</span>${t.rep!=='none'?`<span>🔁 ${t.rep}</span>`:''}</div></div>
+   <button class="del" data-x="${t.id}" aria-label="Delete">🗑</button></li>`).join(''):'<li class="empty">Nothing here yet ✨</li>'
+ document.title=todayN?`(${todayN}) TaskPulse`:'TaskPulse – Smart Task Monitor'}
+
+/* ---------- events ---------- */
+$('#f').onsubmit=e=>{e.preventDefault();addTask({title:$('#title').value.trim(),date:$('#date').value,time:$('#time').value,rep:$('#rep').value,pri:$('#pri').value});$('#title').value=''}
+$('#list').onclick=e=>{const c=e.target.closest('[data-t]'),x=e.target.closest('[data-x]')
+ if(c)toggle(+c.dataset.t);if(x){tasks=tasks.filter(t=>t.id!==+x.dataset.x);commit()}}
+$('#tabs').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;filter=b.dataset.f;day=null;$$('.chip').forEach(c=>c.classList.toggle('on',c===b));render()}
+$('#week').onclick=e=>{const b=e.target.closest('[data-d]');if(!b)return;day=day===b.dataset.d?null:b.dataset.d;render()}
+$('#q').oninput=render
+$('#theme').onclick=()=>{const r=document.documentElement,l=getComputedStyle(r).colorScheme==='light';r.dataset.theme=l?'dark':'light'}
+const n0=new Date();$('#date').value=iso(n0);$('#time').value=`${pad(n0.getHours())}:${pad((n0.getMinutes()+10)%60)}`
+
+/* ---------- assistant (rule-based NLP) ---------- */
+const say=(t,me)=>{const m=document.createElement('div');m.className='msg '+(me?'me':'bot');m.textContent=t;$('#chat').append(m);m.scrollIntoView({block:'end'})}
+const DAYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
+function parse(txt){
+ let s=txt.toLowerCase().trim(),d=new Date(),rep='none',timed=false,pri='med'
+ if(/\b(every ?day|daily)\b/.test(s)){rep='daily';s=s.replace(/\b(every ?day|daily)\b/,'')}
+ if(/\b(every ?week|weekly)\b/.test(s)){rep='weekly';s=s.replace(/\b(every ?week|weekly)\b/,'')}
+ if(/\b(urgent|important|asap)\b/.test(s)){pri='high';s=s.replace(/\b(urgent|important|asap)\b/,'')}
+ let m=s.match(/\bin (\d+) ?(min|minutes?|hours?|hrs?|days?)\b/)
+ if(m){const n=+m[1],u=m[2][0];u==='m'?d.setMinutes(d.getMinutes()+n):u==='h'?d.setHours(d.getHours()+n):d.setDate(d.getDate()+n);timed=u!=='d';s=s.replace(m[0],'')}
+ if(/\btomorrow\b/.test(s)){d.setDate(d.getDate()+1);s=s.replace('tomorrow','')}
+ s=s.replace(/\btoday\b/,'')
+ DAYS.forEach((w,i)=>{if(new RegExp('\\b'+w+'\\b').test(s)){d.setDate(d.getDate()+((i-d.getDay()+7)%7||7));s=s.replace(w,'')}})
+ m=s.match(/\b(?:at )?(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/)||s.match(/\bat (\d{1,2})(?::(\d{2}))?\b/)
+ if(m){let h=+m[1];if(m[3]==='pm'&&h<12)h+=12;if(m[3]==='am'&&h===12)h=0;d.setHours(h,+(m[2]||0),0,0);timed=true;s=s.replace(m[0],'')}
+ if(!timed){d.setHours(d.getHours()+1,0,0,0)}
+ const title=s.replace(/^(please )?(remind me( to)?|add|create|set|schedule)\s+/,'').replace(/\b(on|at|by|in|to|for)\s*$/,'').replace(/\s+/g,' ').trim()
+ return{title:title?title[0].toUpperCase()+title.slice(1):'',date:iso(d),time:`${pad(d.getHours())}:${pad(d.getMinutes())}`,rep,pri}}
+$('#cf').onsubmit=e=>{e.preventDefault();const v=$('#ci').value.trim();if(!v)return;$('#ci').value='';say(v,1)
+ const l=v.toLowerCase(),open=tasks.filter(t=>!t.done)
+ if(/what.?s next|next task|upcoming/.test(l)){const n=open.filter(t=>at(t)>=new Date()).sort((a,b)=>at(a)-at(b))[0];return say(n?`Next: “${n.title}” at ${fmt(n)} on ${n.date}.`:'You’re all caught up! 🎉')}
+ if(/clear done|clear completed/.test(l)){const n=tasks.length;tasks=tasks.filter(t=>!t.done);commit();return say(`Cleared ${n-tasks.length} completed task(s).`)}
+ if(/^(show|list).*today|today.?s tasks/.test(l)){const n=open.filter(t=>t.date===iso(new Date()));return say(n.length?n.map(t=>`• ${fmt(t)} ${t.title}`).join('\n'):'Nothing due today.')}
+ if(/^(hi|hello|hey)\b/.test(l))return say('Hi! Tell me what to remind you about and when.')
+ const p=parse(v);if(!p.title)return say('What should I remind you about?')
+ addTask(p);say(`Done ✅ “${p.title}” on ${p.date} at ${fmt(p)}${p.rep!=='none'?`, repeating ${p.rep}`:''}.`)}
+$('#chat').style.whiteSpace='pre-line'
+
+/* ---------- loop ---------- */
+function tick(){const n=new Date()
+ $('#clk').textContent=n.toLocaleTimeString([],{hour12:false})
+ $('#dte').textContent=n.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'})
+ tasks.filter(t=>!t.done&&!t.fired&&at(t)<=n&&n-at(t)<9e5).forEach(alertTask)
+ if(n.getSeconds()===0)render()}
+tasks.forEach(t=>{if(!t.done&&!t.fired&&new Date()-at(t)>=9e5)t.fired=true})
+say('Hi, I’m Pulse 👋 Tell me things like “call mom tomorrow at 5pm” and I’ll set the reminder.')
+render();tick();setInterval(tick,1000)
+</script>
+</body>
+</html>
